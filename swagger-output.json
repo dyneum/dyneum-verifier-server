@@ -1,0 +1,102 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Dyneum Verifier API",
+    "description": "Description",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/age-verification/age-verification": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "age",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/age-verification/signup/polygon-id": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/auth/signin/polygon-id": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/auth/signin/polygon-id/callback": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}
