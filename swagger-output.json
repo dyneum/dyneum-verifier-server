@@ -5,14 +5,17 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "localhost:8000",
+  "host": "http://192.168.100.207:8000",
   "basePath": "/",
   "schemes": [
     "http"
   ],
   "paths": {
-    "/age-verification/age-verification": {
+    "/age-verification/get-qr": {
       "get": {
+        "tags": [
+          "gender verificaion"
+        ],
         "description": "",
         "parameters": [
           {
@@ -31,8 +34,13 @@
             "description": "OK"
           }
         }
-      },
+      }
+    },
+    "/age-verification/callback": {
       "post": {
+        "tags": [
+          "gender verificaion"
+        ],
         "description": "",
         "parameters": [
           {
@@ -51,9 +59,24 @@
         }
       }
     },
-    "/age-verification/signup/polygon-id": {
-      "post": {
+    "/gender-verification/get-qr": {
+      "get": {
+        "tags": [
+          "age verificaion"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "age",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -61,8 +84,34 @@
         }
       }
     },
-    "/auth/signin/polygon-id": {
+    "/gender-verification/callback": {
+      "post": {
+        "tags": [
+          "age verificaion"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/signin/polygon-id/get-qr": {
       "get": {
+        "tags": [
+          "auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -80,6 +129,9 @@
     },
     "/auth/signin/polygon-id/callback": {
       "post": {
+        "tags": [
+          "auth"
+        ],
         "description": "",
         "parameters": [
           {

@@ -5,28 +5,43 @@ const CredentailCreater = (
   type,
   context,
   credentialSubject
-) => ({
-  id: id,
-  circuitId: circuitId,
-  query: {
-    allowedIssuers: allowedIssuers,
-    type: type,
-    context: context,
-    credentialSubject,
-  },
-});
+) => {
+  return {
+    id: id,
+    circuitId: circuitId,
+    query: {
+      allowedIssuers: allowedIssuers,
+      type: type,
+      context: context,
+      credentialSubject: credentialSubject,
+    },
+  };
+};
 
-const KYCAgeCredential = (credentialSubject) =>
+const AgeCredential = (credentialSubject) =>
   CredentailCreater(
-    1703835396,
+    1710071699,
     "credentialAtomicQuerySigV2",
-    ["did:polygonid:polygon:mumbai:2qF7hkxwVNjVruYMo1nVDEGkVNBJ6BnFBW7abEjLxA"],
+    ["*"],
     "AgeLimitVerifier",
-    "ipfs://Qmb363qQVD22hLrtovowjtwsQc32vuh5RPoFiZsM3YQXFB",
+    "ipfs://QmRdrZwqTLwpkDHEnkuxifJGvZfovuTerJrRf6dWnZ7wkm",
     credentialSubject
+  );
+
+const GenderCredential = () =>
+  CredentailCreater(
+    1710225101,
+    "credentialAtomicQuerySigV2",
+    ["did:polygonid:polygon:mumbai:2qMLpQ5py1YzBTTuLEeX2yr6pDGQ7gyXAfygaPakzq"],
+    "GenderDisclose",
+    "ipfs://Qmf1vBLNtBp9Ki7pS3HnqVHqzW7WzBWRfP4rQcByX6ALxP",
+    {
+      gender: {},
+    }
   );
 
 module.exports = {
   CredentailCreater,
-  KYCAgeCredential,
+  AgeCredential,
+  GenderCredential,
 };

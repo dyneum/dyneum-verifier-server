@@ -23,6 +23,7 @@ const socketMessage = (fn, status, data) => ({
 // ===================== controller for polygon signin get QR code =======================
 const getSigninPolygonIdQR = (wss) =>
   asyncFunction((req, res) => {
+    // #swagger.tags = ['auth']
     const sessionId = req.query.sessionId;
     console.log("getAuthQr for", sessionId);
 
@@ -63,6 +64,7 @@ const getSigninPolygonIdQR = (wss) =>
 // ===================== controller for polygon signin callback ==========================
 const singinPolygonIdQR = (wss) =>
   asyncFunction(async (req, res) => {
+    // #swagger.tags = ['auth']
     const sessionId = req.query.sessionId;
 
     // get this session's auth request for verification
@@ -104,8 +106,12 @@ const singinPolygonIdQR = (wss) =>
       const opts = {
         AcceptedStateTransitionDelay: 5 * 60 * 1000, // up to a 5 minute delay accepted by the Verifier
       };
-      authResponse = await verifier.fullVerify(tokenStr, authRequest, opts);
-      const userId = authResponse.from;
+      const authResponse = await verifier.fullVerify(
+        tokenStr,
+        authRequest,
+        opts
+      );
+      const userId = authResponse.from ?? "unknown";
 
       wss.emit(
         sessionId,

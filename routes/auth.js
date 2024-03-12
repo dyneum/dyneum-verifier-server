@@ -6,7 +6,7 @@ const {
 
 module.exports = function (wsServer) {
   // Route for getAuthQr
-  router.get("/signin/polygon-id", getSigninPolygonIdQR(wsServer));
+  router.get("/signin/polygon-id/get-qr", getSigninPolygonIdQR(wsServer));
   router.post("/signin/polygon-id/callback", singinPolygonIdQR(wsServer));
 
   // Add more routes as needed

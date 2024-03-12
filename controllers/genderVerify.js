@@ -1,10 +1,9 @@
 const { auth, resolver } = require("@iden3/js-iden3-auth");
 const getRawBody = require("raw-body");
 const asyncFunction = require("../utils/asyncCatch");
-const { AgeCredential } = require("../utils/proofRequest");
+const { GenderCredential } = require("../utils/proofRequest");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
-const { calculateBirthdate } = require("../utils");
 
 // ================ UTILS ====================
 const authRequests = new Map();
@@ -23,12 +22,12 @@ const socketMessage = (fn, status, data) => ({
 });
 // ========================== UTILS  =====================
 
-// =========================== CONTROLLER FOR AGE VERIFICATION GET QR CODE ==============================
-const getAgeVerificationdQR = (wss) =>
+// =========================== CONTROLLER FOR GENDER VERIFICATION GET QR CODE ==============================
+const getGenderVerificationdQR = (wss) =>
   asyncFunction((req, res) => {
-    // #swagger.tags = ['gender verificaion']
+    // #swagger.tags = ['age verificaion']
     const sessionId = req.query.sessionId ?? uuidv4();
-    const age = req.query.age ?? 18;
+    console.log("getAuthQr for", sessionId);
 
     wss.emit(
       sessionId,
@@ -46,42 +45,41 @@ const getAgeVerificationdQR = (wss) =>
       body: {
         reason: "Must be born before this year",
         callbackUrl: uri,
-        scope: [
-          AgeCredential({
-            dob: {
-              $lt: calculateBirthdate(age),
-            },
-          }),
-        ],
+        scope: [GenderCredential()],
       },
     };
 
     authRequests.set(sessionId, request);
 
+    // Set a timer to expire the session after 5 minutes
     const sessionTimer = setTimeout(() => {
-      // if the session has not been completed, delete it
       if (authRequests.has(sessionId)) {
         authRequests.delete(sessionId);
         sessionExpirations.delete(sessionId);
         console.log("Session expired:", sessionId);
       }
-    }, 5000);
+    }, 0.25 * 60 * 1000);
+
     sessionExpirations.set(sessionId, sessionTimer);
 
     wss.emit(sessionId, socketMessage("getAuthQr", STATUS.DONE, request));
 
     return res.status(200).json(request);
   });
-// =========================== CONTROLLER FOR AGE VERIFICATION GET QR CODE ==============================
+// =========================== CONTROLLER FOR GENDER VERIFICATION GET QR CODE ==============================
 
-// ====================== CONTROLLER FOR AGE VERIFICATION CALLBACK =======================================
-const ageVerificationCallback = (wss) =>
+// ====================== CONTROLLER FOR GENDER VERIFICATION CALLBACK =======================================
+const genderVerificationCallback = (wss) =>
   asyncFunction(async (req, res) => {
-    // #swagger.tags = ['gender verificaion']
+    // #swagger.tags = ['age verificaion']
     const sessionId = req.query.sessionId;
 
+    console.log(authRequests.keys());
     // get this session's auth request for verification
     const authRequest = authRequests.get(sessionId);
+
+    authRequests.delete(sessionId);
+    sessionExpirations.delete(sessionId);
     console.log(`handleVerification for ${sessionId}`);
 
     wss.emit(
@@ -130,6 +128,8 @@ const ageVerificationCallback = (wss) =>
         socketMessage("handleVerification", STATUS.DONE, authResponse)
       );
 
+      console.log(JSON.stringify(authResponse));
+
       await postAgeVerification(sessionId, tokenStr);
 
       return res
@@ -156,20 +156,24 @@ const postAgeVerification = async (sessionId, jwz) => {
     session_id: sessionId,
   };
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      accept: "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-  await res.json();
+    await res.json();
+  } catch (err) {
+    console.log(err);
+  }
 };
-// ==================== CONTROLLER FOR AGE VERIFICATION CALLBACK ===========================
+// ==================== CONTROLLER FOR GENDER VERIFICATION CALLBACK ===========================
 
 module.exports = {
-  getAgeVerificationdQR,
-  ageVerificationCallback,
+  getGenderVerificationdQR,
+  genderVerificationCallback,
 };

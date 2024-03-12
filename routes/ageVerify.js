@@ -1,13 +1,14 @@
 const router = require("express").Router();
 const {
-  getSignupPolygonIdQR,
-  singupPolygonIdQR,
+  getAgeVerificationdQR,
+  ageVerificationCallback,
 } = require("../controllers/ageVerify");
 
 module.exports = function (wsServer) {
   // Route for getAuthQr
-  router.get("/age-verification", getSignupPolygonIdQR(wsServer));
-  router.post("/age-verification", singupPolygonIdQR(wsServer));
+
+  router.get("/get-qr", getAgeVerificationdQR(wsServer));
+  router.post("/callback", ageVerificationCallback(wsServer));
 
   // Add more routes as needed
   return router;

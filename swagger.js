@@ -1,11 +1,12 @@
 const swaggerAutogen = require("swagger-autogen")();
+require("dotenv").config();
 
 const doc = {
   info: {
     title: "Dyneum Verifier API",
     description: "Description",
   },
-  host: "localhost:8000",
+  host: process.env.HOSTED_SERVER_URL,
 };
 
 const outputFile = "./swagger-output.json";
