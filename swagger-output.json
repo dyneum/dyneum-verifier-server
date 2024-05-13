@@ -5,17 +5,13 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "http://192.168.100.207:8000",
+  "host": "http://192.168.100.207:5001",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/age-verification/get-qr": {
       "get": {
-        "tags": [
-          "gender verificaion"
-        ],
+        "tags": ["gender verificaion"],
         "description": "",
         "parameters": [
           {
@@ -38,9 +34,7 @@
     },
     "/age-verification/callback": {
       "post": {
-        "tags": [
-          "gender verificaion"
-        ],
+        "tags": ["gender verificaion"],
         "description": "",
         "parameters": [
           {
@@ -61,9 +55,7 @@
     },
     "/gender-verification/get-qr": {
       "get": {
-        "tags": [
-          "age verificaion"
-        ],
+        "tags": ["age verificaion"],
         "description": "",
         "parameters": [
           {
@@ -86,9 +78,7 @@
     },
     "/gender-verification/callback": {
       "post": {
-        "tags": [
-          "age verificaion"
-        ],
+        "tags": ["age verificaion"],
         "description": "",
         "parameters": [
           {
@@ -109,9 +99,7 @@
     },
     "/auth/signin/polygon-id/get-qr": {
       "get": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "description": "",
         "parameters": [
           {
@@ -129,9 +117,7 @@
     },
     "/auth/signin/polygon-id/callback": {
       "post": {
-        "tags": [
-          "auth"
-        ],
+        "tags": ["auth"],
         "description": "",
         "parameters": [
           {

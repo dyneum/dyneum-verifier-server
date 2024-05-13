@@ -21,7 +21,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(error);
 
-const server = app.listen(port, "192.168.100.207", () => {
+const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 

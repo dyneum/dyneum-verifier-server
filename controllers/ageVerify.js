@@ -150,7 +150,7 @@ const ageVerificationCallback = (wss) =>
 
 // post the session id, jwz and token body for age verification to the dyneum server
 const postAgeVerification = async (sessionId, jwz) => {
-  const url = `${process.env.DYNEUM_SERVER}/api/v1/auth/age-verification-callback/`;
+  const url = `${process.env.DYNEUM_SERVER}/api/v1/vendor-auth/age-verification-callback/`;
   const data = {
     jwz: jwz,
     session_id: sessionId,
