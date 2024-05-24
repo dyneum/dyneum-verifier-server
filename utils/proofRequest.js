@@ -28,6 +28,16 @@ const AgeCredential = (credentialSubject) =>
     credentialSubject
   );
 
+const KYBCredential = () =>
+  CredentailCreater(
+    1716534821,
+    "credentialAtomicQuerySigV2",
+    ["*"],
+    "EcommerceKYC",
+    "ipfs://QmavVepeN3Qijvfq7ieyER6sUAWTyBLVeaxyR9SjYCKJgK",
+    null
+  );
+
 const GenderCredential = () =>
   CredentailCreater(
     1710225101,
@@ -44,4 +54,5 @@ module.exports = {
   CredentailCreater,
   AgeCredential,
   GenderCredential,
+  KYBCredential,
 };

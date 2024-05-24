@@ -93,7 +93,7 @@ const singinPolygonIdQR = (wss) =>
     );
 
     const resolvers = {
-      ["polygon:mumbai"]: ethStateResolver,
+      ["polygon:amoy"]: ethStateResolver,
     };
 
     const verifier = await auth.Verifier.newVerifier({

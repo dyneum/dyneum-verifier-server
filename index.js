@@ -6,6 +6,7 @@ const error = require("./utils/error");
 const authRoute = require("./routes/auth");
 const ageVerifyRoute = require("./routes/ageVerify");
 const genderVerifyRoute = require("./routes/genderVerify");
+const kybVerifyROute = require("./routes/kybVerify");
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger-output.json");
@@ -29,6 +30,7 @@ const wss = new WebSocket.Server({ server });
 
 app.use("/age-verification", ageVerifyRoute(wss));
 app.use("/gender-verification", genderVerifyRoute(wss));
+app.use("/kyb-verification", kybVerifyROute);
 
 // #swagger.tags = ['auth']
 app.use("/auth", authRoute(wss));
