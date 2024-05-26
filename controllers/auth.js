@@ -99,7 +99,7 @@ const singinPolygonIdQR = (wss) =>
     const verifier = await auth.Verifier.newVerifier({
       stateResolver: resolvers,
       circuitsDir: path.join(__dirname, keyDIR),
-      ipfsGatewayURL: "https://ipfs.io",
+      ipfsGatewayURL: process.env.IPFS_GATEWAY,
     });
 
     try {

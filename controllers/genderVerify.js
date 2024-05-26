@@ -39,7 +39,7 @@ const getGenderVerificationdQR = (wss) =>
     const request = {
       id: sessionId,
       thid: sessionId,
-      from: "did:polygonid:polygon:mumbai:2qDyy1kEo2AYcP3RT4XGea7BtxsY285szg6yP9SPrs",
+      from: process.env.VERIFIER_DID,
       typ: "application/iden3comm-plain-json",
       type: "https://iden3-communication.io/authorization/1.0/request",
       body: {
@@ -109,7 +109,7 @@ const genderVerificationCallback = (wss) =>
     const verifier = await auth.Verifier.newVerifier({
       stateResolver: resolvers,
       circuitsDir: path.join(__dirname, keyDIR),
-      ipfsGatewayURL: "https://ipfs.io",
+      ipfsGatewayURL: process.env.IPFS_GATEWAY,
     });
 
     try {

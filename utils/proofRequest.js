@@ -18,6 +18,18 @@ const CredentailCreater = (
   };
 };
 
+const CredentailCreaterNOX = (id, circuitId, allowedIssuers, type, context) => {
+  return {
+    id: id,
+    circuitId: circuitId,
+    query: {
+      allowedIssuers: allowedIssuers,
+      type: type,
+      context: context,
+    },
+  };
+};
+
 const AgeCredential = (credentialSubject) =>
   CredentailCreater(
     1710071699,
@@ -29,13 +41,12 @@ const AgeCredential = (credentialSubject) =>
   );
 
 const KYBCredential = () =>
-  CredentailCreater(
+  CredentailCreaterNOX(
     1716534821,
     "credentialAtomicQuerySigV2",
     ["*"],
     "EcommerceKYC",
-    "ipfs://QmavVepeN3Qijvfq7ieyER6sUAWTyBLVeaxyR9SjYCKJgK",
-    null
+    "ipfs://QmavVepeN3Qijvfq7ieyER6sUAWTyBLVeaxyR9SjYCKJgK"
   );
 
 const GenderCredential = () =>
