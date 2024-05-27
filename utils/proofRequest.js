@@ -49,6 +49,15 @@ const KYBCredential = () =>
     "ipfs://QmavVepeN3Qijvfq7ieyER6sUAWTyBLVeaxyR9SjYCKJgK"
   );
 
+const KYCCredential = () =>
+  CredentailCreaterNOX(
+    1716534821,
+    "credentialAtomicQuerySigV2",
+    ["*"],
+    "EcommerceKYC",
+    "ipfs://QmavVepeN3Qijvfq7ieyER6sUAWTyBLVeaxyR9SjYCKJgK"
+  );
+
 const GenderCredential = () =>
   CredentailCreater(
     1710225101,
@@ -66,4 +75,5 @@ module.exports = {
   AgeCredential,
   GenderCredential,
   KYBCredential,
+  KYCCredential,
 };
