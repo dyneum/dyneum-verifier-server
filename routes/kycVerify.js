@@ -2,7 +2,7 @@ const {
   getKYCVerificationdQR,
   kycVerificationCallback,
   getKYCVerificationToken,
-} = require("../controllers/KycVerify");
+} = require("../controllers/kycVerify");
 
 const router = require("express").Router();
 
