@@ -5,13 +5,17 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "http://192.168.100.207:5001",
+  "host": "http://192.168.100.180:5001",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/age-verification/get-qr": {
       "get": {
-        "tags": ["gender verificaion"],
+        "tags": [
+          "gender verificaion"
+        ],
         "description": "",
         "parameters": [
           {
@@ -34,7 +38,9 @@
     },
     "/age-verification/callback": {
       "post": {
-        "tags": ["gender verificaion"],
+        "tags": [
+          "gender verificaion"
+        ],
         "description": "",
         "parameters": [
           {
@@ -55,16 +61,13 @@
     },
     "/gender-verification/get-qr": {
       "get": {
-        "tags": ["age verificaion"],
+        "tags": [
+          "age verificaion"
+        ],
         "description": "",
         "parameters": [
           {
             "name": "sessionId",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "age",
             "in": "query",
             "type": "string"
           }
@@ -78,7 +81,9 @@
     },
     "/gender-verification/callback": {
       "post": {
-        "tags": ["age verificaion"],
+        "tags": [
+          "age verificaion"
+        ],
         "description": "",
         "parameters": [
           {
@@ -97,9 +102,119 @@
         }
       }
     },
+    "/kyb-verification/get-qr": {
+      "get": {
+        "tags": [
+          "gender verificaion"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/kyb-verification/callback": {
+      "post": {
+        "tags": [
+          "gender verificaion"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/kyb-verification/get-new-token": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/kyc-verification/get-qr": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/kyc-verification/callback": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/kyc-verification/get-new-token": {
+      "get": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/auth/signin/polygon-id/get-qr": {
       "get": {
-        "tags": ["auth"],
+        "tags": [
+          "auth"
+        ],
         "description": "",
         "parameters": [
           {
@@ -117,7 +232,9 @@
     },
     "/auth/signin/polygon-id/callback": {
       "post": {
-        "tags": ["auth"],
+        "tags": [
+          "auth"
+        ],
         "description": "",
         "parameters": [
           {
