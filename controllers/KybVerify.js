@@ -8,6 +8,10 @@ const { v4: uuidv4 } = require("uuid");
 // ================ UTILS ====================
 const authRequests = new Map();
 const sessionExpirations = new Map();
+const authSessions = new Map();
+
+const responseSessions = new Map();
+const responseSessionExpirations = new Map();
 
 // ========================== UTILS  =====================
 
@@ -18,7 +22,7 @@ const getKYBVerificationdQR = asyncFunction((req, res) => {
   const tenant_id = req.query.tenant_id;
   const authorization = req.headers["authorization"];
 
-  const uri = `${process.env.HOSTED_SERVER_URL}/kyb-verification/callback?sessionId=${sessionId}&authorization=${authorization}&tenant_id=${tenant_id}`;
+  const uri = `${process.env.HOSTED_SERVER_URL}/kyb-verification/callback?sessionId=${sessionId}&tenant_id=${tenant_id}`;
 
   const request = {
     id: sessionId,
@@ -34,12 +38,17 @@ const getKYBVerificationdQR = asyncFunction((req, res) => {
   };
 
   authRequests.set(sessionId, request);
+  authSessions.set(sessionId, authorization);
+  responseSessions.set(authorization, "");
 
   const sessionTimer = setTimeout(() => {
     // if the session has not been completed, delete it
     if (authRequests.has(sessionId)) {
       authRequests.delete(sessionId);
+      authSessions.delete(sessionId);
       sessionExpirations.delete(sessionId);
+      responseSessions.delete(authorization);
+      responseSessionExpirations.delete(authorization);
       console.log("Session expired:", sessionId);
     }
   }, 300000);
@@ -53,7 +62,7 @@ const getKYBVerificationdQR = asyncFunction((req, res) => {
 const kybVerificationCallback = asyncFunction(async (req, res) => {
   // #swagger.tags = ['gender verificaion']
   const sessionId = req.query.sessionId;
-  const authorization = req.query.authorization;
+  const authorization = authSessions.get(sessionId);
   const tenant_id = req.query.tenant_id;
 
   console.log(sessionId, authorization, tenant_id);
@@ -95,7 +104,16 @@ const kybVerificationCallback = asyncFunction(async (req, res) => {
     console.log("tala");
     const userId = authResponse.from;
 
-    await postKYBVerification(sessionId, tokenStr, authorization, tenant_id);
+    const response = await postKYBVerification(
+      sessionId,
+      tokenStr,
+      authorization,
+      tenant_id
+    );
+
+    if (responseSessions.has(authorization)) {
+      responseSessions.set(authorization, response);
+    }
 
     return res
       .status(200)
@@ -117,7 +135,7 @@ const postKYBVerification = async (
 ) => {
   const url = `${process.env.DYNEUM_SERVER}/api/v1/vendor-auth/kyb-verification-callback/`;
   const data = {
-    jwz: jwz,
+    jwz_token: jwz,
     session_id: sessionId,
     tenant_id: tenant_id,
   };
@@ -128,15 +146,47 @@ const postKYBVerification = async (
       "Content-Type": "application/json",
       accept: "application/json",
       Authorization: authorization,
+      "Ngrok-Skip-Browser-Warning": "true",
     },
     body: JSON.stringify(data),
   });
 
-  await res.json();
+  // console.log(getRawBody(res));
+  console.log(res.status);
+
+  const returnData = await res.json();
+
+  return returnData;
 };
 // ==================== CONTROLLER FOR AGE VERIFICATION CALLBACK ===========================
+
+const getKYBVerificationToken = asyncFunction(async (req, res) => {
+  const authorization = req.headers.authorization;
+
+  if (responseSessions.has(authorization)) {
+    const data = responseSessions.get(authorization);
+
+    if (data) {
+      res.status(200).json({
+        status: "success",
+        data: data,
+      });
+    } else {
+      res.status(200).json({
+        status: "pending",
+        data: null,
+      });
+    }
+  } else {
+    res.status(400).json({
+      status: "Not Found",
+      data: null,
+    });
+  }
+});
 
 module.exports = {
   getKYBVerificationdQR,
   kybVerificationCallback,
+  getKYBVerificationToken,
 };
