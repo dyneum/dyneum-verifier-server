@@ -150,10 +150,14 @@ const postKYCVerification = async (
     body: JSON.stringify(data),
   });
 
-  // console.log(getRawBody(res));
+  console.log(getRawBody(res));
   console.log(res.status);
 
+  console.log(res, "res");
+
   const returnData = await res.json();
+
+  console.log(returnData);
 
   return returnData;
 };

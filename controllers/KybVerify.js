@@ -113,6 +113,10 @@ const kybVerificationCallback = asyncFunction(async (req, res) => {
 
     if (responseSessions.has(authorization)) {
       responseSessions.set(authorization, response);
+
+      authRequests.delete(sessionId);
+      authSessions.delete(sessionId);
+      sessionExpirations.delete(sessionId);
     }
 
     return res
@@ -171,6 +175,9 @@ const getKYBVerificationToken = asyncFunction(async (req, res) => {
         status: "success",
         data: data,
       });
+
+      responseSessions.delete(authorization);
+      responseSessionExpirations.delete(authorization);
     } else {
       res.status(200).json({
         status: "pending",
