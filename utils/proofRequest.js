@@ -54,8 +54,8 @@ const KYCCredential = () =>
     1716534821,
     "credentialAtomicQuerySigV2",
     ["*"],
-    "EcommerceKYC",
-    "ipfs://QmavVepeN3Qijvfq7ieyER6sUAWTyBLVeaxyR9SjYCKJgK"
+    "IndividualKYC",
+    "ipfs://QmNR37jsBKJt1RGs6YH9gcZoixdARBg7vjzNkCFNiER1LX"
   );
 
 const GenderCredential = () =>

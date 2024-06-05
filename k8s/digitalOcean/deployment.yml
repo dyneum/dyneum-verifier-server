@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dyn-verifier-deployment
+  labels:
+    app: dyn-verifier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dyn-verifier
+  template:
+    metadata:
+      labels:
+        app: dyn-verifier
+    spec:
+      containers:
+        - name: dyn-verifier
+          image: <IMAGE> # Replace with your actual Docker image name
+          ports:
+            - containerPort: 8000 # Port where your app listens inside the container
+          env:
+            - name: HOSTED_SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: dyn-verifier-secret
+                  key: HOSTED_SERVER_URL
+            - name: VERIFIER_DID
+              valueFrom:
+                secretKeyRef:
+                  name: dyn-verifier-secret
+                  key: VERIFIER_DID
+            - name: RPC_URL_MUMBAI
+              valueFrom:
+                secretKeyRef:
+                  name: dyn-verifier-secret
+                  key: RPC_URL_MUMBAI
+            - name: DYNEUM_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: dyn-verifier-secret
+                  key: DYNEUM_SERVER
+            - name: IPFS_GATEWAY
+              valueFrom:
+                secretKeyRef:
+                  name: dyn-verifier-secret
+                  key: IPFS_GATEWAY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dyn-verifier-service
+spec:
+  type: NodePort # Change to NodePort if you're not using a cloud provider
+  selector:
+    app: dyn-verifier
+  ports:
+    - protocol: TCP
+      port: 8000 # External port to access the Service
+      targetPort: 8000 # Port on the container that the Service forwards traffic to
