@@ -35,7 +35,7 @@ const getAgeVerificationdQR = (wss) =>
       socketMessage("getAuthQr", STATUS.IN_PROGRESS, sessionId)
     );
 
-    const uri = `${process.env.HOSTED_SERVER_URL}/gender-verification/callback?sessionId=${sessionId}`;
+    const uri = `${process.env.HOSTED_SERVER_URL}/age-verification/callback?sessionId=${sessionId}`;
 
     console.log("env verifier did", process.env.VERIFIER_DID);
 
