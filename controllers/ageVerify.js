@@ -132,6 +132,8 @@ const ageVerifiyController = (wss) => {
         if (sessionWS) {
           const resdj = await resd.json();
 
+          console.log("resdj", resdj.detail);
+
           sessionWS.send(JSON.stringify(resdj));
 
           authRequests.delete(sessionId);
