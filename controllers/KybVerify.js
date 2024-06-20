@@ -144,23 +144,27 @@ const postKYBVerification = async (
     tenant_id: tenant_id,
   };
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      accept: "application/json",
-      Authorization: authorization,
-      "Ngrok-Skip-Browser-Warning": "true",
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+        Authorization: authorization,
+        "Ngrok-Skip-Browser-Warning": "true",
+      },
+      body: JSON.stringify(data),
+    });
 
-  // console.log(getRawBody(res));
-  console.log(res.status);
+    // console.log(getRawBody(res));
+    console.log(res, "api response");
 
-  const returnData = await res.json();
+    const returnData = await res.json();
 
-  return returnData;
+    return returnData;
+  } catch (error) {
+    console.log(error, "error aako");
+  }
 };
 // ==================== CONTROLLER FOR AGE VERIFICATION CALLBACK ===========================
 
