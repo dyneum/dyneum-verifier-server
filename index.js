@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const WebSocket = require("ws");
 const error = require("./utils/error");
+const morgan = require("morgan");
 
 const authRoute = require("./routes/auth");
 const ageVerifyRoute = require("./routes/ageVerify");
@@ -22,6 +23,8 @@ app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(error);
+
+app.use(morgan("common"));
 
 const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
