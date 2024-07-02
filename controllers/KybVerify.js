@@ -151,7 +151,6 @@ const postKYBVerification = async (
         "Content-Type": "application/json",
         accept: "application/json",
         Authorization: authorization,
-        "Ngrok-Skip-Browser-Warning": "true",
       },
       body: JSON.stringify(data),
     });

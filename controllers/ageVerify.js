@@ -132,7 +132,7 @@ const ageVerifiyController = (wss) => {
         if (sessionWS) {
           const resdj = await resd.json();
 
-          console.log("resdj", resdj.detail);
+          console.log("resdj", resdj);
 
           sessionWS.send(JSON.stringify(resdj));
 
@@ -141,12 +141,15 @@ const ageVerifiyController = (wss) => {
 
           sessionWS.close();
           socketSessionMap.delete(sessionId);
+
+          return  res.status(200).set("content-type", "application/json").send("User" + userId + "sucessfully authenticated");
+
         }
 
         return res
-          .status(200)
+          .status(500)
           .set("content-type", "application/json")
-          .send("User" + userId + "successfully authenticated");
+          .send("Session not founed!");
       } catch (error) {
         console.log(error);
 
@@ -158,7 +161,7 @@ const ageVerifiyController = (wss) => {
   const postAgeVerification = async (sessionId, jwz) => {
     const url = `${process.env.DYNEUM_SERVER}/api/v1/vendor-auth/age-verification-callback/`;
     const data = {
-      jwz: jwz,
+      jwz_token: jwz,
       session_id: sessionId,
     };
 
