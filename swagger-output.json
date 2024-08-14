@@ -5,7 +5,7 @@
     "description": "Description",
     "version": "1.0.0"
   },
-  "host": "http://192.168.100.180:5001",
+  "host": "http://192.168.100.180:8000",
   "basePath": "/",
   "schemes": [
     "http"
@@ -32,6 +32,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -45,6 +48,11 @@
         "parameters": [
           {
             "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "age",
             "in": "query",
             "type": "string"
           }
@@ -182,20 +190,58 @@
     },
     "/kyc-verification/get-qr": {
       "get": {
+        "tags": [
+          "gender verificaion"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         }
       }
     },
     "/kyc-verification/callback": {
       "post": {
+        "tags": [
+          "gender verificaion"
+        ],
         "description": "",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "tenant_id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -203,9 +249,19 @@
     "/kyc-verification/get-new-token": {
       "get": {
         "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -249,6 +305,16 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/did/login/callback": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
