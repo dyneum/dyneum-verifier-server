@@ -148,7 +148,60 @@ const singinPolygonIdQR = (wss) =>
 
 // ===================== controller for polygon signin callback ==========================
 
+// =====================
+const didLoginInit = (req, res, next) => {
+  // Define the verification request
+  const verificationRequest = {
+    backUrl: "https://my-app.org/back",
+    finishUrl: "https://my-app.org/finish",
+    logoUrl: "https://my-app.org/logo.png",
+    name: "My app",
+    zkQueries: [
+      {
+        circuitId: "credentialAtomicQuerySigV2",
+        id: 1711399135,
+        query: {
+          allowedIssuers: [
+            "did:iden3:privado:main:2ScrbEuw9jLXMapW3DELXBbDco5EURzJZRN1tYj7L7",
+          ],
+          context:
+            "https://raw.githubusercontent.com/anima-protocol/claims-polygonid/main/schemas/json-ld/pol-v1.json-ld",
+          type: "AnimaProofOfLife",
+          credentialSubject: {
+            human: {
+              $eq: true,
+            },
+          },
+        },
+      },
+    ],
+    callbackUrl: "https://my-app.org/api/callback",
+    verifierDid:
+      "did:iden3:privado:main:28itzVLBHnMJV8sdjyffcAtWCx8HZ7btdKXxs7fJ6v",
+  };
+
+  // Encode the verification request to base64
+  const base64EncodedVerificationRequest = btoa(
+    JSON.stringify(verificationRequest)
+  );
+
+  // Open the Polygon ID Verification Web Wallet with the encoded verification request
+  return res
+    .status(200)
+    .send(
+      `https://verify.polygonid.com/verification-web-wallet?request=${base64EncodedVerificationRequest}`
+    );
+};
+
+const loginVerifierCallback = async (req, res, next) => {
+  return res.status(200).json({
+    message: "Login successful",
+  });
+};
+
 module.exports = {
   getSigninPolygonIdQR,
   singinPolygonIdQR,
+  loginVerifierCallback,
+  didLoginInit,
 };
