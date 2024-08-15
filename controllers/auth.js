@@ -198,10 +198,11 @@ const didLoginInit = (req, res, next) => {
 };
 
 const loginVerifierCallback = async (req, res, next) => {
-  console.log("tarika 1", req);
+  // console.log("tarika 1", req);
 
   const raw = await getRawBody(req);
-  console.log("tarika 2", raw);
+  const tokenStr = raw.toString().trim();
+  console.log("tarika 2", tokenStr);
   return res.status(200).json({
     message: "Login successful",
   });
