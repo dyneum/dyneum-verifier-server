@@ -191,9 +191,9 @@ const didLoginInit = (req, res, next) => {
   // Open the Polygon ID Verification Web Wallet with the encoded verification request
   return res
     .status(200)
-    .send(
-      `https://verify.polygonid.com/verification-web-wallet?request=${base64EncodedVerificationRequest}`
-    );
+    .json({
+      url: `https://verify.polygonid.com/verification-web-wallet?request=${base64EncodedVerificationRequest}`
+   });
 };
 
 const loginVerifierCallback = async (req, res, next) => {
