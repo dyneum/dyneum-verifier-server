@@ -3,9 +3,12 @@ const getRawBody = require("raw-body");
 const asyncFunction = require("../utils/asyncCatch");
 const { KYCAgeCredential } = require("../utils/proofRequest");
 const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 
 // ================ UTILS FUNCTIONS ================
 const authRequests = new Map();
+
+const didLoginRequests = new Map();
 
 const STATUS = {
   IN_PROGRESS: "IN_PROGRESS",
@@ -152,12 +155,12 @@ const singinPolygonIdQR = (wss) =>
 const didLoginInit = (req, res, next) => {
   // Define the verification request
 
-  const sessionId = "0123456789"
+  const sessionId = uuidv4();
 
   const verificationRequest = {
-    backUrl: "http://localhost/3000",
-    finishUrl: "http://localhost/3000/finish?sessionId="+sessionId,
-    logoUrl: "https://my-app.org/logo.png",
+    backUrl: "http://localhost:3000",
+    finishUrl: `http://localhost:3000/finish?sessionId=${sessionId}`,
+    logoUrl: "https://admin.dyneum.io/favicon.ico",
     name: "Dyneum",
     zkQueries: [
       {
@@ -178,7 +181,7 @@ const didLoginInit = (req, res, next) => {
         },
       },
     ],
-    callbackUrl: "https://dev.api.verifier.dyneum.io/auth/did/login/callback?sessionId="+sessionId,
+    callbackUrl: `https://dev.api.verifier.dyneum.io/auth/did/login/callback?sessionId=${sessionId}`,
     verifierDid:
       "did:iden3:privado:main:28itzVLBHnMJV8sdjyffcAtWCx8HZ7btdKXxs7fJ6v",
   };
@@ -189,18 +192,38 @@ const didLoginInit = (req, res, next) => {
   );
 
   // Open the Polygon ID Verification Web Wallet with the encoded verification request
-  return res
-    .status(200)
-    .json({
-      url: `https://wallet.privado.id/#${base64EncodedVerificationRequest}`
-   });
+  return res.status(200).json({
+    url: `https://wallet.privado.id/#${base64EncodedVerificationRequest}`,
+  });
 };
 
 const loginVerifierCallback = async (req, res, next) => {
-  console.log(req.body)
+  console.log("tarika 1", req);
+
+  const raw = await getRawBody(req);
+  console.log("tarika 2", raw);
   return res.status(200).json({
     message: "Login successful",
   });
+};
+
+const postDidLogin = async (sessionId, jwz) => {
+  const url = `${process.env.DYNEUM_SERVER}/api/v1/humanity-verification-callback/`;
+  const data = {
+    jwz_token: jwz,
+    session_id: sessionId,
+  };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res;
 };
 
 module.exports = {
