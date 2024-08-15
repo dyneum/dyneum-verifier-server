@@ -151,11 +151,14 @@ const singinPolygonIdQR = (wss) =>
 // =====================
 const didLoginInit = (req, res, next) => {
   // Define the verification request
+
+  const sessionId = "0123456789"
+
   const verificationRequest = {
-    backUrl: "https://my-app.org/back",
-    finishUrl: "https://my-app.org/finish",
+    backUrl: "http://localhost/3000",
+    finishUrl: "http://localhost/3000/finish?sessionId="+sessionId,
     logoUrl: "https://my-app.org/logo.png",
-    name: "My app",
+    name: "Dyneum",
     zkQueries: [
       {
         circuitId: "credentialAtomicQuerySigV2",
@@ -175,7 +178,7 @@ const didLoginInit = (req, res, next) => {
         },
       },
     ],
-    callbackUrl: "https://my-app.org/api/callback",
+    callbackUrl: "https://fb30-2400-74e0-10-3979-1aa7-5484-8b2-1e79.ngrok-free.app/api/callback?sessionId="+sessionId,
     verifierDid:
       "did:iden3:privado:main:28itzVLBHnMJV8sdjyffcAtWCx8HZ7btdKXxs7fJ6v",
   };
@@ -194,6 +197,7 @@ const didLoginInit = (req, res, next) => {
 };
 
 const loginVerifierCallback = async (req, res, next) => {
+  console.log(req.body)
   return res.status(200).json({
     message: "Login successful",
   });
