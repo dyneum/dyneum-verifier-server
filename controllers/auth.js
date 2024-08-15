@@ -178,7 +178,7 @@ const didLoginInit = (req, res, next) => {
         },
       },
     ],
-    callbackUrl: "https://fb30-2400-74e0-10-3979-1aa7-5484-8b2-1e79.ngrok-free.app/api/callback?sessionId="+sessionId,
+    callbackUrl: "https://dev.api.verifier.dyneum.io/auth/did/login/callback?sessionId="+sessionId,
     verifierDid:
       "did:iden3:privado:main:28itzVLBHnMJV8sdjyffcAtWCx8HZ7btdKXxs7fJ6v",
   };
@@ -192,7 +192,7 @@ const didLoginInit = (req, res, next) => {
   return res
     .status(200)
     .json({
-      url: `https://verify.polygonid.com/verification-web-wallet?request=${base64EncodedVerificationRequest}`
+      url: `https://wallet.privado.id/#${base64EncodedVerificationRequest}`
    });
 };
 
