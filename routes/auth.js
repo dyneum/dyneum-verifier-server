@@ -3,6 +3,7 @@ const {
   getSigninPolygonIdQR,
   singinPolygonIdQR,
   loginVerifierCallback,
+  didLoginInit
 } = require("../controllers/auth");
 
 module.exports = function (wsServer) {
@@ -10,7 +11,7 @@ module.exports = function (wsServer) {
   router.get("/signin/polygon-id/get-qr", getSigninPolygonIdQR(wsServer));
   router.post("/signin/polygon-id/callback", singinPolygonIdQR(wsServer));
   router.post("/did/login/callback", loginVerifierCallback);
-
+  router.get("/did/login/init", didLoginInit);
   // Add more routes as needed
 
   return router;
