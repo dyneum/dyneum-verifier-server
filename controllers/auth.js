@@ -198,10 +198,32 @@ const didLoginInit = (req, res, next) => {
 };
 
 const loginVerifierCallback = async (req, res, next) => {
-  console.log(req.body);
+  console.log("tarika 1", req);
+
+  const raw = await getRawBody(req);
+  console.log("tarika 2", raw);
   return res.status(200).json({
     message: "Login successful",
   });
+};
+
+const postDidLogin = async (sessionId, jwz) => {
+  const url = `${process.env.DYNEUM_SERVER}/api/v1/humanity-verification-callback/`;
+  const data = {
+    jwz_token: jwz,
+    session_id: sessionId,
+  };
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return res;
 };
 
 module.exports = {
