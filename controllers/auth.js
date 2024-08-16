@@ -257,6 +257,10 @@ const postDidLogin = async (sessionId, jwz) => {
     body: JSON.stringify(data),
   });
 
+console.log(res)
+console.log"================================================================");
+console.log("status", res.status);
+
   return res;
 };
 
