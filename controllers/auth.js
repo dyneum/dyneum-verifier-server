@@ -258,7 +258,7 @@ const postDidLogin = async (sessionId, jwz) => {
   });
 
 console.log(res)
-console.log"================================================================");
+console.log("================================================================");
 console.log("status", res.status);
 
   return res;
