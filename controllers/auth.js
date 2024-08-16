@@ -9,6 +9,8 @@ const { v4: uuidv4 } = require("uuid");
 const authRequests = new Map();
 
 const didLoginRequests = new Map();
+const loginTokens = new Map();
+const tokenExp = new Map();
 
 const STATUS = {
   IN_PROGRESS: "IN_PROGRESS",
@@ -191,6 +193,14 @@ const didLoginInit = (req, res, next) => {
     JSON.stringify(verificationRequest)
   );
 
+  const sessionTimer = setTimeout(() => {
+    // if the session has not been completed, delete it
+    if (didLoginRequests.has(sessionId)) {
+      didLoginRequests.delete(sessionId);
+    }
+  }, 1000 * 60 * 5);
+  didLoginRequests.set(sessionId, sessionTimer);
+
   // Open the Polygon ID Verification Web Wallet with the encoded verification request
   return res.status(200).json({
     url: `https://wallet.privado.id/#${base64EncodedVerificationRequest}`,
@@ -202,10 +212,33 @@ const loginVerifierCallback = async (req, res, next) => {
 
   const raw = await getRawBody(req);
   const tokenStr = raw.toString().trim();
-  console.log("tarika 2", tokenStr);
-  return res.status(200).json({
-    message: "Login successful",
-  });
+
+  const sessionId = req.query.sessionId;
+
+  if (didLoginRequests.has(sessionId)) {
+    const response = postDidLogin(sessionId, tokenStr);
+
+    const responseJson = await response.json();
+
+    loginTokens.set(sessionId, responseJson);
+
+    const sessionTimer = setTimeout(() => {
+      // if the session has not been completed, delete it
+      if (loginTokens.has(sessionId)) {
+        loginTokens.delete(sessionId);
+        tokenExp.delete(sessionId);
+      }
+    }, 1000 * 60 * 5);
+    tokenExp.set(sessionId, sessionTimer);
+
+    return res.status(200).json({
+      message: "Login successful",
+    });
+  } else {
+    return res.status(400).json({
+      message: "Login failed.",
+    });
+  }
 };
 
 const postDidLogin = async (sessionId, jwz) => {
@@ -227,9 +260,27 @@ const postDidLogin = async (sessionId, jwz) => {
   return res;
 };
 
+const loginTokenRequest = (req, res, next) => {
+  const session_id = req.query.sessionId;
+
+  if (loginTokens.has(session_id)) {
+    const token = loginTokens.get(session_id);
+
+    loginTokens.delete(session_id);
+    tokenExp.delete(session_id);
+
+    return res.status(200).json(token);
+  } else {
+    return res
+      .status(400)
+      .json({ message: "Session deoes not exits or expire." });
+  }
+};
+
 module.exports = {
   getSigninPolygonIdQR,
   singinPolygonIdQR,
   loginVerifierCallback,
   didLoginInit,
+  loginTokenRequest,
 };
