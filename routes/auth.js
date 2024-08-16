@@ -3,7 +3,7 @@ const {
   getSigninPolygonIdQR,
   singinPolygonIdQR,
   loginVerifierCallback,
-  didLoginInit
+  didLoginInit,
 } = require("../controllers/auth");
 
 module.exports = function (wsServer) {
