@@ -210,6 +210,7 @@ const didLoginInit = (req, res, next) => {
 const loginVerifierCallback = async (req, res, next) => {
   // console.log("tarika 1", req);
 
+try{
   const raw = await getRawBody(req);
   const tokenStr = raw.toString().trim();
 
@@ -244,6 +245,10 @@ const loginVerifierCallback = async (req, res, next) => {
       message: "Login failed due to sessions expiration.",
     });
   }
+}catch(error){
+console.log(error);
+return res.status(500).send(error)
+}
 };
 
 const postDidLogin = async (sessionId, jwz) => {
