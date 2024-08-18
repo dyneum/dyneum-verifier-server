@@ -4,7 +4,8 @@ const {
   singinPolygonIdQR,
   loginVerifierCallback,
   didLoginInit,
-loginTokenRequest
+  loginTokenRequest,
+  privadoLoginQuerry,
 } = require("../controllers/auth");
 
 module.exports = function (wsServer) {
@@ -13,7 +14,8 @@ module.exports = function (wsServer) {
   router.post("/signin/polygon-id/callback", singinPolygonIdQR(wsServer));
   router.post("/did/login/callback", loginVerifierCallback);
   router.get("/did/login/init", didLoginInit);
-router.get("/did/login/token", loginTokenRequest);
+  router.get("/did/login/token", loginTokenRequest);
+  router.get("/did/privado/login/app-init", privadoLoginQuerry);
   // Add more routes as needed
 
   return router;
