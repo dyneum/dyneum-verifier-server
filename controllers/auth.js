@@ -12,6 +12,9 @@ const didLoginRequests = new Map();
 const loginTokens = new Map();
 const tokenExp = new Map();
 
+const privadologinQuerrySession = new Map();
+const privadologinQuerrySessionExp = new Map();
+
 const STATUS = {
   IN_PROGRESS: "IN_PROGRESS",
   ERROR: "ERROR",
@@ -154,14 +157,64 @@ const singinPolygonIdQR = (wss) =>
 // ===================== controller for polygon signin callback ==========================
 
 // =====================
+
+// ===================== controller for privado did login init for app wallet ==========================
+const privadoLoginQuerry = (req, res, next) => {
+  const sessionId = uuidv4();
+
+  const verificationRequest = {
+    body: {
+      // TODO: change the url for verification
+      callbackUrl: `${process.env.HOSTED_SERVER_URL}/auth/did/login/callback?sessionID=${sessionId}`,
+      reason: "for testing purposes",
+      scope: [
+        {
+          circuitId: "credentialAtomicQuerySigV2",
+          id: 1723982483,
+          query: {
+            allowedIssuers: [
+              "did:polygonid:polygon:amoy:2qTyfBq71SK1BLycaHT7GZ1vSdsY2HveczioQcYMXC",
+            ],
+            context:
+              "https://raw.githubusercontent.com/anima-protocol/claims-polygonid/main/schemas/json-ld/pol-v1.json-ld",
+            credentialSubject: {
+              human: {
+                $eq: true,
+              },
+            },
+            type: "AnimaProofOfLife",
+          },
+        },
+      ],
+    },
+    from: process.env.VERIFIER_DID,
+    id: sessionId,
+    thid: sessionId,
+    typ: "application/iden3comm-plain-json",
+    type: "https://iden3-communication.io/authorization/1.0/request",
+  };
+
+  privadologinQuerrySession.set(sessionId, verificationRequest);
+
+  const sessionexp = setTimeout(() => {
+    privadologinQuerrySession.delete(sessionId);
+    privadologinQuerrySessionExp.delete(sessionId);
+  }, 1000 * 60 * 5);
+
+  privadologinQuerrySessionExp.set(sessionId, sessionexp);
+
+  return res.status(200).json(verificationRequest);
+};
+// ===================== controller for privado did login init for app wallet ==========================
+
 const didLoginInit = (req, res, next) => {
   // Define the verification request
 
   const sessionId = uuidv4();
 
   const verificationRequest = {
-    backUrl: "http://localhost:3000",
-    finishUrl: `http://localhost:3000/finish?sessionId=${sessionId}`,
+    backUrl: process.env.VENDOR_SERVER_URL,
+    finishUrl: `${process.env.VENDOR_SERVER_URL}/finish?sessionId=${sessionId}`,
     logoUrl: "https://admin.dyneum.io/favicon.ico",
     name: "Dyneum",
     zkQueries: [
@@ -210,45 +263,44 @@ const didLoginInit = (req, res, next) => {
 const loginVerifierCallback = async (req, res, next) => {
   // console.log("tarika 1", req);
 
-try{
-  const raw = await getRawBody(req);
-  const tokenStr = raw.toString().trim();
+  try {
+    const raw = await getRawBody(req);
+    const tokenStr = raw.toString().trim();
 
-  const sessionId = req.query.sessionId;
+    const sessionId = req.query.sessionId;
 
-  if (didLoginRequests.has(sessionId)) {
-    const response = await postDidLogin(sessionId, tokenStr);
+    if (didLoginRequests.has(sessionId)) {
+      const response = await postDidLogin(sessionId, tokenStr);
 
+      if (response) {
+        const responseJson = await response.json();
 
-    if (response) {
-      const responseJson = await response.json();
+        loginTokens.set(sessionId, responseJson);
 
-      loginTokens.set(sessionId, responseJson);
+        const sessionTimer = setTimeout(() => {
+          // if the session has not been completed, delete it
+          if (loginTokens.has(sessionId)) {
+            loginTokens.delete(sessionId);
+            tokenExp.delete(sessionId);
+          }
+        }, 1000 * 60 * 5);
+        tokenExp.set(sessionId, sessionTimer);
 
-      const sessionTimer = setTimeout(() => {
-        // if the session has not been completed, delete it
-        if (loginTokens.has(sessionId)) {
-          loginTokens.delete(sessionId);
-          tokenExp.delete(sessionId);
-        }
-      }, 1000 * 60 * 5);
-      tokenExp.set(sessionId, sessionTimer);
-
-      return res.status(200).json(responseJson);
+        return res.status(200).json(responseJson);
+      } else {
+        return res.status(400).json({
+          message: "Login failed due to no response from the server.",
+        });
+      }
     } else {
       return res.status(400).json({
-        message: "Login failed due to no response from the server.",
+        message: "Login failed due to sessions expiration.",
       });
     }
-  } else {
-    return res.status(400).json({
-      message: "Login failed due to sessions expiration.",
-    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error);
   }
-}catch(error){
-console.log(error);
-return res.status(500).send(error)
-}
 };
 
 const postDidLogin = async (sessionId, jwz) => {
@@ -258,8 +310,8 @@ const postDidLogin = async (sessionId, jwz) => {
     session_id: sessionId,
   };
 
-console.log(url)
-console.log(data)
+  console.log(url);
+  console.log(data);
 
   const res = await fetch(url, {
     method: "POST",
@@ -292,7 +344,7 @@ const loginTokenRequest = (req, res, next) => {
   } else {
     return res
       .status(400)
-      .json({ message: "Session deoes not exits or expire." });
+      .json({ message: "Session deoes not exist or expired." });
   }
 };
 
@@ -302,4 +354,5 @@ module.exports = {
   loginVerifierCallback,
   didLoginInit,
   loginTokenRequest,
+  privadoLoginQuerry,
 };
