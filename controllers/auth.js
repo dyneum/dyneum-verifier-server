@@ -216,37 +216,45 @@ const loginVerifierCallback = async (req, res, next) => {
   const sessionId = req.query.sessionId;
 
   if (didLoginRequests.has(sessionId)) {
-    const response = postDidLogin(sessionId, tokenStr);
+    const response = await postDidLogin(sessionId, tokenStr);
 
-    const responseJson = await response.json();
 
-    loginTokens.set(sessionId, responseJson);
+    if (response) {
+      const responseJson = await response.json();
 
-    const sessionTimer = setTimeout(() => {
-      // if the session has not been completed, delete it
-      if (loginTokens.has(sessionId)) {
-        loginTokens.delete(sessionId);
-        tokenExp.delete(sessionId);
-      }
-    }, 1000 * 60 * 5);
-    tokenExp.set(sessionId, sessionTimer);
+      loginTokens.set(sessionId, responseJson);
 
-    return res.status(200).json({
-      message: "Login successful",
-    });
+      const sessionTimer = setTimeout(() => {
+        // if the session has not been completed, delete it
+        if (loginTokens.has(sessionId)) {
+          loginTokens.delete(sessionId);
+          tokenExp.delete(sessionId);
+        }
+      }, 1000 * 60 * 5);
+      tokenExp.set(sessionId, sessionTimer);
+
+      return res.status(200).json(responseJson);
+    } else {
+      return res.status(400).json({
+        message: "Login failed due to no response from the server.",
+      });
+    }
   } else {
     return res.status(400).json({
-      message: "Login failed.",
+      message: "Login failed due to sessions expiration.",
     });
   }
 };
 
 const postDidLogin = async (sessionId, jwz) => {
-  const url = `${process.env.DYNEUM_SERVER}/api/v1/humanity-verification-callback/`;
+  const url = `${process.env.DYNEUM_SERVER}/api/v1/vendor-auth/humanity-verification-callback/`;
   const data = {
     jwz_token: jwz,
     session_id: sessionId,
   };
+
+console.log(url)
+console.log(data)
 
   const res = await fetch(url, {
     method: "POST",
@@ -257,9 +265,11 @@ const postDidLogin = async (sessionId, jwz) => {
     body: JSON.stringify(data),
   });
 
-console.log(res)
-console.log("================================================================");
-console.log("status", res.status);
+  console.log(res);
+  console.log(
+    "================================================================"
+  );
+  console.log("status", res.status);
 
   return res;
 };
